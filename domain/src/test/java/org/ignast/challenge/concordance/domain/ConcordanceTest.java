@@ -3,7 +3,9 @@ package org.ignast.challenge.concordance.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class ConcordanceTest {
@@ -13,5 +15,15 @@ class ConcordanceTest {
     @Test
     public void shouldNotGenerateForEmptyDocument() {
         assertThat(concordance.generate(List.of())).isEmpty();
+    }
+
+    @Test
+    public void shouldGenerateForSingleWord() {
+        assertThat(concordance.generate(List.of(List.of("a")))).isEqualTo(Map.of("a", List.of(1)));
+    }
+
+    @Test
+    public void shouldNotGenerateForEmptyLines() {
+        assertThat(concordance.generate(List.of(List.of()))).isEmpty();
     }
 }
