@@ -1,9 +1,7 @@
 package org.ignast.challenge.concordance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -29,8 +27,14 @@ class ConcordanceTest {
     }
 
     @Test
-    public void shouldGenerateForSameWords() {
+    public void shouldGenerateForSameWordsInFirstLine() {
         assertThat(concordance.generate(List.of(List.of("a", "a")))).isEqualTo(Map.of("a", List.of(1, 1)));
+    }
+
+    @Test
+    public void shouldGenerateForSameWordsInNonFirstLine() {
+        assertThat(concordance.generate(List.of(List.of(), List.of("a"), List.of("a"))))
+            .isEqualTo(Map.of("a", List.of(2, 3)));
     }
 
     @Test
