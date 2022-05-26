@@ -29,6 +29,11 @@ class ConcordanceTest {
     }
 
     @Test
+    public void shouldGenerateForSameWords() {
+        assertThat(concordance.generate(List.of(List.of("a", "a")))).isEqualTo(Map.of("a", List.of(1, 1)));
+    }
+
+    @Test
     public void shouldNotGenerateForEmptyLines() {
         assertThat(concordance.generate(List.of(List.of()))).isEmpty();
     }

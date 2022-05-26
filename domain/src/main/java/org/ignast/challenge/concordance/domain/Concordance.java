@@ -25,6 +25,7 @@ public class Concordance {
                                     frequencies.add(1);
                                     return frequencies;
                                 } else {
+                                    v.add(1);
                                     return v;
                                 }
                             }
