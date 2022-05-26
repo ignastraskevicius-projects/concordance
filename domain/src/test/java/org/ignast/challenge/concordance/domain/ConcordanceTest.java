@@ -18,6 +18,12 @@ class ConcordanceTest {
     }
 
     @Test
+    public void shouldGenerateForMultipleWordsInTheFirstLine() {
+        assertThat(concordance.generate(List.of(List.of("a", "b"))))
+            .isEqualTo(Map.of("a", List.of(1), "b", List.of(1)));
+    }
+
+    @Test
     public void shouldGenerateForSingleWord() {
         assertThat(concordance.generate(List.of(List.of("a")))).isEqualTo(Map.of("a", List.of(1)));
     }

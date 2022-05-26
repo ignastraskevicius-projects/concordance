@@ -8,14 +8,12 @@ import java.util.function.BinaryOperator;
 import lombok.val;
 
 public class Concordance {
-
     public Map<String, List<Integer>> generate(List<List<String>> text) {
         return text.isEmpty()
             ? Map.of()
             : text
                 .get(0)
                 .stream()
-                .limit(1)
                 .reduce(
                     new HashMap<String, List<Integer>>(),
                     (map, word) -> {
