@@ -4,8 +4,9 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.ignast.challenge.concordance.domain.Concordance;
 
 @RequiredArgsConstructor
@@ -25,7 +26,32 @@ public class ConcordanceController {
         );
     }
 
-    private List<List<String>> parseSentences(final List<String> list) {
-        return list.stream().map(l -> Arrays.asList(l.replace(".", "").toLowerCase().split(" "))).collect(Collectors.toUnmodifiableList());
+    private List<List<String>> parseSentences(final List<String> lines) {
+        return splitBySentences(concatLines(lines))
+            .stream()
+            .map(line -> toWords(line))
+            .collect(Collectors.toUnmodifiableList());
+    }
+
+    private List<String> toWords(String line) {
+        return Arrays
+            .asList(line.replace(".", "").toLowerCase().split(" "))
+            .stream()
+            .filter(word -> !word.isEmpty())
+            .collect(Collectors.toUnmodifiableList());
+    }
+
+    private String concatLines(List<String> list) {
+        return list.stream().collect(Collectors.joining(" "));
+    }
+
+    private List<String> splitBySentences(String text) {
+        val chars = text.toCharArray();
+        IntStream
+            .range(1, chars.length - 1)
+            .filter(i -> chars[i - 1] == '.')
+            .filter(i -> chars[i] == ' ')
+            .forEach(i -> chars[i] = '\n');
+        return Arrays.asList(String.valueOf(chars).split("\n"));
     }
 }

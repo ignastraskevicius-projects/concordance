@@ -23,7 +23,19 @@ class ConcordanceControllerTest {
 
         controller.generateConcordance(mock(Path.class));
 
-        verify(concordance).generate(List.of());
+        verify(concordance).generate(List.of(List.of()));
+    }
+
+    @Test
+    public void shouldParseMultipleEmptyLines() {
+        val controller = new ConcordanceController(
+            new FileBasedCommunicationStub(List.of("", ""), List.of()),
+            concordance
+        );
+
+        controller.generateConcordance(mock(Path.class));
+
+        verify(concordance).generate(List.of(List.of()));
     }
 
     @Test
@@ -53,12 +65,24 @@ class ConcordanceControllerTest {
     @Test
     public void shouldParseParagraphsWords() {
         val controller = new ConcordanceController(
-                new FileBasedCommunicationStub(List.of("Hello world.", "Hello computer."), List.of()),
-                concordance
+            new FileBasedCommunicationStub(List.of("Hello world.", "Hello computer."), List.of()),
+            concordance
         );
 
         controller.generateConcordance(mock(Path.class));
 
         verify(concordance).generate(List.of(List.of("hello", "world"), List.of("hello", "computer")));
+    }
+
+    @Test
+    public void shouldParseSentenceSpanningMultipleLines() {
+        val controller = new ConcordanceController(
+            new FileBasedCommunicationStub(List.of("Hello", "world."), List.of()),
+            concordance
+        );
+
+        controller.generateConcordance(mock(Path.class));
+
+        verify(concordance).generate(List.of(List.of("hello", "world")));
     }
 }
