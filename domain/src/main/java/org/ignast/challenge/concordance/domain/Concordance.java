@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.BinaryOperator;
 import java.util.stream.IntStream;
 import lombok.val;
@@ -11,7 +12,7 @@ import lombok.val;
 public class Concordance {
 
     public Map<String, List<Integer>> generate(List<List<String>> text) {
-        val concordance = new HashMap<String, List<Integer>>();
+        val concordance = new TreeMap<String, List<Integer>>();
         IntStream
             .range(0, text.size())
             .forEach(lineIndex -> {

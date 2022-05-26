@@ -22,6 +22,12 @@ class ConcordanceTest {
     }
 
     @Test
+    public void wordsShouldBeOrderedAlphabetically() {
+        assertThat(concordance.generate(List.of(List.of("d", "a", "f", "c", "b"))).keySet().stream().toList())
+            .isEqualTo(List.of("a", "b", "c", "d", "f"));
+    }
+
+    @Test
     public void shouldGenerateForSingleWord() {
         assertThat(concordance.generate(List.of(List.of("a")))).isEqualTo(Map.of("a", List.of(1)));
     }
