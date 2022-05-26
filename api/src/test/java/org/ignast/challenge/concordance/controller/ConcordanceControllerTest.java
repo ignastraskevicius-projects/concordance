@@ -41,12 +41,24 @@ class ConcordanceControllerTest {
     @Test
     public void shouldParseMultipleWords() {
         val controller = new ConcordanceController(
-                new FileBasedCommunicationStub(List.of("Hello world."), List.of()),
-                concordance
+            new FileBasedCommunicationStub(List.of("Hello world."), List.of()),
+            concordance
         );
 
         controller.generateConcordance(mock(Path.class));
 
         verify(concordance).generate(List.of(List.of("hello", "world")));
+    }
+
+    @Test
+    public void shouldParseParagraphsWords() {
+        val controller = new ConcordanceController(
+                new FileBasedCommunicationStub(List.of("Hello world.", "Hello computer."), List.of()),
+                concordance
+        );
+
+        controller.generateConcordance(mock(Path.class));
+
+        verify(concordance).generate(List.of(List.of("hello", "world"), List.of("hello", "computer")));
     }
 }
