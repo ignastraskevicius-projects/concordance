@@ -14,9 +14,9 @@ public class Concordance {
         val concordance = new HashMap<String, List<Integer>>();
         IntStream
             .range(0, text.size())
-            .forEach(i -> {
+            .forEach(lineIndex -> {
                 text
-                    .get(i)
+                    .get(lineIndex)
                     .stream()
                     .reduce(
                         concordance,
@@ -26,10 +26,10 @@ public class Concordance {
                                 (k, v) -> {
                                     if (v == null) {
                                         val frequencies = new ArrayList<Integer>();
-                                        frequencies.add(oneBasedIndex(i));
+                                        frequencies.add(oneBasedIndex(lineIndex));
                                         return frequencies;
                                     } else {
-                                        v.add(oneBasedIndex(i));
+                                        v.add(oneBasedIndex(lineIndex));
                                         return v;
                                     }
                                 }
