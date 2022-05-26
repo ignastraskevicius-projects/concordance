@@ -1,5 +1,8 @@
 package org.ignast.challenge.concordance.controller;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class AlphabeticCounter {
 
     private int counter = 0;

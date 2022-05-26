@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import lombok.val;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LocalFileBasedCommunication {
 
     private static final String INPUT_FILE_EXTENSION = ".input";

@@ -8,7 +8,9 @@ import java.util.TreeMap;
 import java.util.function.BinaryOperator;
 import java.util.stream.IntStream;
 import lombok.val;
+import org.springframework.stereotype.Service;
 
+@Service
 public class Concordance {
 
     public Map<String, List<Integer>> generate(List<List<String>> text) {
