@@ -2,6 +2,7 @@ package org.ignast.challenge.concordance.controller;
 
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -17,6 +18,8 @@ public class ConcordanceController {
 
     private final Concordance concordanceGenerator;
 
+    private final AlphabeticCounter counter = new AlphabeticCounter();
+
     public Path generateConcordance(final Path inputFilePath) {
         return localFileBasedCommunication.handleRequest(
             inputFilePath,
@@ -25,18 +28,33 @@ public class ConcordanceController {
     }
 
     private List<String> serialize(Map<String, List<Integer>> concordance) {
+        val spaceForEachWord = getLengthOfLongestWord(concordance);
         return concordance
             .entrySet()
             .stream()
             .map(entry ->
                 String.format(
-                    "a. %s {%d:%s}",
-                    entry.getKey(),
+                    "%s. %s {%d:%s}",
+                    counter.next(),
+                    addTabulationAfter(entry.getKey(), spaceForEachWord),
                     entry.getValue().size(),
                     entry.getValue().stream().map(String::valueOf).collect(Collectors.joining(","))
                 )
             )
             .collect(Collectors.toUnmodifiableList());
+    }
+
+    private Integer getLengthOfLongestWord(Map<String, List<Integer>> concordance) {
+        return concordance
+            .keySet()
+            .stream()
+            .max(Comparator.comparing(String::length))
+            .map(String::length)
+            .orElse(0);
+    }
+
+    private String addTabulationAfter(String word, Integer spaceToTake) {
+        return word + (" ".repeat(spaceToTake - word.length()));
     }
 
     private List<List<String>> parseSentences(final List<String> lines) {
