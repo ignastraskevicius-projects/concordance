@@ -23,8 +23,7 @@ public class LocalFileBasedCommunication {
         List<String> outputFileLines = requestHandler.apply(readLinesFrom(inputFilePath));
         final Path outputFilePath = getOutputFilePath(inputFilePath);
         writeLinesTo(outputFilePath, outputFileLines);
-
-        return null;
+        return outputFilePath;
     }
 
     private Path getOutputFilePath(Path inputFilePath) {

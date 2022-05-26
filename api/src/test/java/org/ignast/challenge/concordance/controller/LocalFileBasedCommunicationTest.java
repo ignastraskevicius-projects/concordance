@@ -84,12 +84,14 @@ class LocalFileBasedCommunicationTest {
     @Test
     public void shouldWriteToOutputFile() throws IOException {
         writeFile(inputFile.getPath(), "");
-        fileBasedComms.handleRequest(inputFile.toPath(), inputLines -> List.of("1", "2"));
+        val outputPath = fileBasedComms.handleRequest(inputFile.toPath(), inputLines -> List.of("1", "2"));
 
         val result = Files.lines(outputFilePath).collect(Collectors.toUnmodifiableList());
         assertThat(result).hasSize(2);
         assertThat(result.get(0)).isEqualTo("1");
         assertThat(result.get(1)).isEqualTo("2");
+
+        assertThat(outputPath).isEqualTo(outputFilePath);
     }
 
     private void writeFile(String path, String content) throws IOException {
