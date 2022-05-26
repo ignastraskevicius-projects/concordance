@@ -97,4 +97,28 @@ class ConcordanceControllerTest {
 
         verify(concordance).generate(List.of(List.of("hello", "world", "i.e.", "new", "program")));
     }
+
+    @Test
+    public void commasShouldBeDropped() {
+        val controller = new ConcordanceController(
+            new FileBasedCommunicationStub(List.of("hello, world."), List.of()),
+            concordance
+        );
+
+        controller.generateConcordance(mock(Path.class));
+
+        verify(concordance).generate(List.of(List.of("hello", "world")));
+    }
+
+    @Test
+    public void colonsShouldBeDropped() {
+        val controller = new ConcordanceController(
+            new FileBasedCommunicationStub(List.of("hello: world."), List.of()),
+            concordance
+        );
+
+        controller.generateConcordance(mock(Path.class));
+
+        verify(concordance).generate(List.of(List.of("hello", "world")));
+    }
 }

@@ -27,10 +27,14 @@ public class ConcordanceController {
     }
 
     private List<List<String>> parseSentences(final List<String> lines) {
-        return splitBySentences(concatLines(lines))
+        return splitBySentences(removePunctuation(concatLines(lines)))
             .stream()
             .map(line -> toWords(line))
             .collect(Collectors.toUnmodifiableList());
+    }
+
+    private String removePunctuation(String text) {
+        return text.replace(",", "").replace(":", "");
     }
 
     private List<String> toWords(String line) {
