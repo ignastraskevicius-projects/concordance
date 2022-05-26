@@ -85,4 +85,16 @@ class ConcordanceControllerTest {
 
         verify(concordance).generate(List.of(List.of("hello", "world")));
     }
+
+    @Test
+    public void wordsEndingWithDotButNotEndingTheSentenceShouldNotBeTakenToAccountWhenSplittingSentences() {
+        val controller = new ConcordanceController(
+            new FileBasedCommunicationStub(List.of("Hello world i.e. new program"), List.of()),
+            concordance
+        );
+
+        controller.generateConcordance(mock(Path.class));
+
+        verify(concordance).generate(List.of(List.of("hello", "world", "i.e.", "new", "program")));
+    }
 }

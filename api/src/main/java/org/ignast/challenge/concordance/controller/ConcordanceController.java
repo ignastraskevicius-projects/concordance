@@ -35,7 +35,7 @@ public class ConcordanceController {
 
     private List<String> toWords(String line) {
         return Arrays
-            .asList(line.replace(".", "").toLowerCase().split(" "))
+            .asList(line.toLowerCase().split(" "))
             .stream()
             .filter(word -> !word.isEmpty())
             .collect(Collectors.toUnmodifiableList());
@@ -51,7 +51,15 @@ public class ConcordanceController {
             .range(1, chars.length - 1)
             .filter(i -> chars[i - 1] == '.')
             .filter(i -> chars[i] == ' ')
+            .filter(i -> Character.isUpperCase(chars[i + 1]))
             .forEach(i -> chars[i] = '\n');
-        return Arrays.asList(String.valueOf(chars).split("\n"));
+        removeDotFromLastSentence(chars);
+        return Arrays.asList(String.valueOf(chars).split(".\n"));
+    }
+
+    private void removeDotFromLastSentence(char[] chars) {
+        if (chars.length > 0 && chars[chars.length - 1] == '.') {
+            chars[chars.length - 1] = ' ';
+        }
     }
 }
