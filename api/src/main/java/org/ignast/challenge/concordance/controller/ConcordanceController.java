@@ -3,6 +3,7 @@ package org.ignast.challenge.concordance.controller;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +20,23 @@ public class ConcordanceController {
     public Path generateConcordance(final Path inputFilePath) {
         return localFileBasedCommunication.handleRequest(
             inputFilePath,
-            inputLines -> {
-                concordanceGenerator.generate(parseSentences(inputLines));
-                return List.of();
-            }
+            inputLines -> serialize(concordanceGenerator.generate(parseSentences(inputLines)))
         );
+    }
+
+    private List<String> serialize(Map<String, List<Integer>> concordance) {
+        return concordance
+            .entrySet()
+            .stream()
+            .map(entry ->
+                String.format(
+                    "a. %s {%d:%s}",
+                    entry.getKey(),
+                    entry.getValue().size(),
+                    entry.getValue().stream().map(String::valueOf).collect(Collectors.joining(","))
+                )
+            )
+            .collect(Collectors.toUnmodifiableList());
     }
 
     private List<List<String>> parseSentences(final List<String> lines) {
