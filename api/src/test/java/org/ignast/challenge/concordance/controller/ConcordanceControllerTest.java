@@ -18,11 +18,14 @@ class ConcordanceControllerTest {
 
     private final Concordance concordance = mock(Concordance.class);
 
+    private final AlphabeticCounter counter = new AlphabeticCounter();
+
     @Test
     public void shouldParseEmptyFile() {
         val controller = new ConcordanceController(
             new FileBasedCommunicationStub(List.of(), List.of()),
-            concordance
+            concordance,
+            counter
         );
 
         controller.generateConcordance(mock(Path.class));
@@ -34,7 +37,8 @@ class ConcordanceControllerTest {
     public void shouldParseMultipleEmptyLines() {
         val controller = new ConcordanceController(
             new FileBasedCommunicationStub(List.of("", ""), List.of()),
-            concordance
+            concordance,
+            counter
         );
 
         controller.generateConcordance(mock(Path.class));
@@ -46,7 +50,8 @@ class ConcordanceControllerTest {
     public void shouldParseSingleWordLowercaseTextWithoutPunctuation() {
         val controller = new ConcordanceController(
             new FileBasedCommunicationStub(List.of("Word."), List.of()),
-            concordance
+            concordance,
+            counter
         );
 
         controller.generateConcordance(mock(Path.class));
@@ -58,7 +63,8 @@ class ConcordanceControllerTest {
     public void shouldParseMultipleWords() {
         val controller = new ConcordanceController(
             new FileBasedCommunicationStub(List.of("Hello world."), List.of()),
-            concordance
+            concordance,
+            counter
         );
 
         controller.generateConcordance(mock(Path.class));
@@ -70,7 +76,8 @@ class ConcordanceControllerTest {
     public void shouldParseParagraphsWords() {
         val controller = new ConcordanceController(
             new FileBasedCommunicationStub(List.of("Hello world.", "Hello computer."), List.of()),
-            concordance
+            concordance,
+            counter
         );
 
         controller.generateConcordance(mock(Path.class));
@@ -82,7 +89,8 @@ class ConcordanceControllerTest {
     public void shouldParseSentenceSpanningMultipleLines() {
         val controller = new ConcordanceController(
             new FileBasedCommunicationStub(List.of("Hello", "world."), List.of()),
-            concordance
+            concordance,
+            counter
         );
 
         controller.generateConcordance(mock(Path.class));
@@ -94,7 +102,8 @@ class ConcordanceControllerTest {
     public void wordsEndingWithDotButNotEndingTheSentenceShouldNotBeTakenToAccountWhenSplittingSentences() {
         val controller = new ConcordanceController(
             new FileBasedCommunicationStub(List.of("Hello world i.e. new program"), List.of()),
-            concordance
+            concordance,
+            counter
         );
 
         controller.generateConcordance(mock(Path.class));
@@ -106,7 +115,8 @@ class ConcordanceControllerTest {
     public void commasShouldBeDropped() {
         val controller = new ConcordanceController(
             new FileBasedCommunicationStub(List.of("hello, world."), List.of()),
-            concordance
+            concordance,
+            counter
         );
 
         controller.generateConcordance(mock(Path.class));
@@ -118,7 +128,8 @@ class ConcordanceControllerTest {
     public void colonsShouldBeDropped() {
         val controller = new ConcordanceController(
             new FileBasedCommunicationStub(List.of("hello: world."), List.of()),
-            concordance
+            concordance,
+            counter
         );
 
         controller.generateConcordance(mock(Path.class));
@@ -132,7 +143,8 @@ class ConcordanceControllerTest {
 
         val controller = new ConcordanceController(
             new FileBasedCommunicationStub(List.of(), List.of()),
-            concordance
+            concordance,
+            counter
         );
 
         controller.generateConcordance(mock(Path.class));
@@ -143,8 +155,9 @@ class ConcordanceControllerTest {
         when(concordance.generate(any())).thenReturn(Map.of("word", List.of(4, 5)));
 
         val controller = new ConcordanceController(
-            new FileBasedCommunicationStub(List.of(), List.of("a. word {2:4,5}")),
-            concordance
+            new FileBasedCommunicationStub(List.of(), List.of("a.         word {2:4,5}")),
+            concordance,
+            counter
         );
 
         controller.generateConcordance(mock(Path.class));
@@ -156,8 +169,12 @@ class ConcordanceControllerTest {
             .thenReturn(new TreeMap(Map.of("hello", List.of(1), "world", List.of(1))));
 
         val controller = new ConcordanceController(
-            new FileBasedCommunicationStub(List.of(), List.of("a. hello {1:1}", "b. world {1:1}")),
-            concordance
+            new FileBasedCommunicationStub(
+                List.of(),
+                List.of("a.         hello {1:1}", "b.         world {1:1}")
+            ),
+            concordance,
+            counter
         );
 
         controller.generateConcordance(mock(Path.class));
@@ -171,9 +188,29 @@ class ConcordanceControllerTest {
         val controller = new ConcordanceController(
             new FileBasedCommunicationStub(
                 List.of(),
-                List.of("a. longlongword {1:1}", "b. short        {1:1}")
+                List.of("a.         longlongword {1:1}", "b.         short        {1:1}")
             ),
-            concordance
+            concordance,
+            counter
+        );
+
+        controller.generateConcordance(mock(Path.class));
+    }
+
+    @Test
+    public void spacingBetweenLineNumberAndStatisticsShouldBeBigEnoughToAccommodateLongestLineNumberAndStillMaintainConsistentTabulation() {
+        val counter = mock(AlphabeticCounter.class);
+        when(counter.next()).thenReturn("a", "aaa");
+        when(concordance.generate(any()))
+            .thenReturn(new TreeMap(Map.of("hello", List.of(1), "world", List.of(1))));
+
+        val controller = new ConcordanceController(
+            new FileBasedCommunicationStub(
+                List.of(),
+                List.of("a.         hello {1:1}", "aaa.       world {1:1}")
+            ),
+            concordance,
+            counter
         );
 
         controller.generateConcordance(mock(Path.class));

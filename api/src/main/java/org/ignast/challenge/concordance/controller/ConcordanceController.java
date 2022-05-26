@@ -18,7 +18,7 @@ public class ConcordanceController {
 
     private final Concordance concordanceGenerator;
 
-    private final AlphabeticCounter counter = new AlphabeticCounter();
+    private final AlphabeticCounter counter;
 
     public Path generateConcordance(final Path inputFilePath) {
         return localFileBasedCommunication.handleRequest(
@@ -34,8 +34,8 @@ public class ConcordanceController {
             .stream()
             .map(entry ->
                 String.format(
-                    "%s. %s {%d:%s}",
-                    counter.next(),
+                    "%s %s {%d:%s}",
+                    addTabulationAfter(counter.next() + ".", 10),
                     addTabulationAfter(entry.getKey(), spaceForEachWord),
                     entry.getValue().size(),
                     entry.getValue().stream().map(String::valueOf).collect(Collectors.joining(","))
