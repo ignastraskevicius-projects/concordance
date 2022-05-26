@@ -6,10 +6,21 @@ public class AlphabeticCounter {
 
     public String next() {
         counter++;
-        if ((counter - 1) / 26 > 0) {
-            return "" + (char) ((counter - 1) / 26 + 'a' - 1) + (char) ((counter - 1) % 26 + 'a');
-        } else {
-            return (char) (counter - 1 + 'a') + "";
+        int n = counter;
+        char[] str = "        ".toCharArray();
+        int i = 7;
+
+        while (n > 0) {
+            int rem = n % 26;
+
+            if (rem == 0) {
+                str[i--] = 'z';
+                n = (n / 26) - 1;
+            } else {
+                str[i--] = (char) ((rem - 1) + 'a');
+                n = n / 26;
+            }
         }
+        return new String(str).strip();
     }
 }
