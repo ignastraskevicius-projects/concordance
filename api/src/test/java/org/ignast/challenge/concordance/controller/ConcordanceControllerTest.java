@@ -37,4 +37,16 @@ class ConcordanceControllerTest {
 
         verify(concordance).generate(List.of(List.of("word")));
     }
+
+    @Test
+    public void shouldParseMultipleWords() {
+        val controller = new ConcordanceController(
+                new FileBasedCommunicationStub(List.of("Hello world."), List.of()),
+                concordance
+        );
+
+        controller.generateConcordance(mock(Path.class));
+
+        verify(concordance).generate(List.of(List.of("hello", "world")));
+    }
 }

@@ -1,6 +1,7 @@
 package org.ignast.challenge.concordance.controller;
 
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.ignast.challenge.concordance.domain.Concordance;
@@ -23,6 +24,6 @@ public class ConcordanceController {
     }
 
     private List<List<String>> parseSentences(final List<String> list) {
-        return list.isEmpty() ? List.of() : List.of(List.of(list.get(0).replace(".", "").toLowerCase()));
+        return list.isEmpty() ? List.of() : List.of(Arrays.asList(list.get(0).replace(".", "").toLowerCase().split(" ")));
     }
 }
