@@ -14,8 +14,15 @@ public class LocalFileBasedCommunication {
         final Path inputFilePath,
         final Function<List<String>, List<String>> requestHandler
     ) {
+        validateInputFilePath(inputFilePath);
         readLinesFrom(inputFilePath);
         return null;
+    }
+
+    private void validateInputFilePath(Path inputFilePath) {
+        if (!inputFilePath.toString().endsWith(INPUT_FILE_EXTENSION)) {
+            throw new IllegalArgumentException("Input file name expected to end with '.input' extension");
+        }
     }
 
     private List<String> readLinesFrom(Path inputFilePath) {

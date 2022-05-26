@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import lombok.val;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,5 +47,17 @@ class LocalFileBasedCommunicationTest {
             .isThrownBy(() ->
                 fileBasedComms.handleRequest(Path.of("non-existent-file.input"), inputLines -> List.of())
             );
+    }
+
+    @Test
+    public void shouldFailIfInputFileDoesNotEndWithInputLiteral() throws IOException {
+        val file = Files
+            .createFile(Path.of(tempDir.getAbsolutePath() + File.separator + fileName))
+            .toAbsolutePath()
+            .toFile();
+        file.deleteOnExit();
+
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> fileBasedComms.handleRequest(file.toPath(), inputLines -> List.of()));
     }
 }
