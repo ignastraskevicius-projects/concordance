@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.val;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -78,6 +79,17 @@ class LocalFileBasedCommunicationTest {
                 return List.of();
             }
         );
+    }
+
+    @Test
+    public void shouldWriteToOutputFile() throws IOException {
+        writeFile(inputFile.getPath(), "");
+        fileBasedComms.handleRequest(inputFile.toPath(), inputLines -> List.of("1", "2"));
+
+        val result = Files.lines(outputFilePath).collect(Collectors.toUnmodifiableList());
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0)).isEqualTo("1");
+        assertThat(result.get(1)).isEqualTo("2");
     }
 
     private void writeFile(String path, String content) throws IOException {

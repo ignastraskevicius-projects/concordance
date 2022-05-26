@@ -1,10 +1,13 @@
 package org.ignast.challenge.concordance.controller;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import lombok.val;
 
 public class LocalFileBasedCommunication {
 
@@ -15,8 +18,21 @@ public class LocalFileBasedCommunication {
         final Function<List<String>, List<String>> requestHandler
     ) {
         validateInputFilePath(inputFilePath);
-        requestHandler.apply(readLinesFrom(inputFilePath));
+        List<String> outputFileLines = requestHandler.apply(readLinesFrom(inputFilePath));
+        final Path outputFilePath = getOutputFilePath(inputFilePath);
+        writeLinesTo(outputFilePath, outputFileLines);
+
         return null;
+    }
+
+    private Path getOutputFilePath(Path inputFilePath) {
+        val outputFilePath = Path.of(
+            inputFilePath
+                .toString()
+                .substring(0, inputFilePath.toString().length() - INPUT_FILE_EXTENSION.length()) +
+            ".output"
+        );
+        return outputFilePath;
     }
 
     private void validateInputFilePath(Path inputFilePath) {
@@ -31,5 +47,33 @@ public class LocalFileBasedCommunication {
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    private void writeLinesTo(Path outputFilePath, List<String> outputFileLines) {
+        try {
+            Files.createFile(outputFilePath);
+            val fileWriter = outputFileLines
+                .stream()
+                .reduce(new FileWriter(outputFilePath.toFile()), this::writeLine, combinationNotSupported());
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private FileWriter writeLine(final FileWriter writer, final String line) {
+        try {
+            writer.write(line + System.lineSeparator());
+            return writer;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private <T> BinaryOperator<T> combinationNotSupported() {
+        return (a, b) -> {
+            throw new UnsupportedOperationException();
+        };
     }
 }
