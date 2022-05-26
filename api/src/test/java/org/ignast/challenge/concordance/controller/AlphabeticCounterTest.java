@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 class AlphabeticCounterTest {
 
-    private static final AlphabeticCounter counter = new AlphabeticCounter();
+    private final AlphabeticCounter counter = new AlphabeticCounter();
 
     @Test
     public void shouldCountAsSingleLetters() {
@@ -20,5 +20,24 @@ class AlphabeticCounterTest {
             .skip(23)
             .findFirst()
             .ifPresent(c -> assertThat(c).isEqualTo("z"));
+    }
+
+    @Test
+    public void shouldCountAsMultiLetterString() {
+        Stream
+            .generate(() -> counter.next())
+            .skip(26)
+            .findFirst()
+            .ifPresent(c -> assertThat(c).isEqualTo("aa"));
+
+        assertThat(counter.next()).isEqualTo("ab");
+
+        Stream
+            .generate(() -> counter.next())
+            .skip(23)
+            .findFirst()
+            .ifPresent(c -> assertThat(c).isEqualTo("az"));
+
+        assertThat(counter.next()).isEqualTo("ba");
     }
 }

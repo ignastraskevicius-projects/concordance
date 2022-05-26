@@ -6,6 +6,10 @@ public class AlphabeticCounter {
 
     public String next() {
         counter++;
-        return (char) (counter + 97 - 1) + "";
+        if ((counter - 1) / 26 > 0) {
+            return "" + (char) ((counter - 1) / 26 + 'a' - 1) + (char) ((counter - 1) % 26 + 'a');
+        } else {
+            return (char) (counter - 1 + 'a') + "";
+        }
     }
 }
