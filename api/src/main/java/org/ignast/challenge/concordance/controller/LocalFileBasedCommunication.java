@@ -15,7 +15,7 @@ public class LocalFileBasedCommunication {
         final Function<List<String>, List<String>> requestHandler
     ) {
         validateInputFilePath(inputFilePath);
-        readLinesFrom(inputFilePath);
+        requestHandler.apply(readLinesFrom(inputFilePath));
         return null;
     }
 

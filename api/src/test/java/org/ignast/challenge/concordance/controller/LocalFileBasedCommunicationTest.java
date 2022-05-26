@@ -1,9 +1,11 @@
 package org.ignast.challenge.concordance.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -59,5 +61,29 @@ class LocalFileBasedCommunicationTest {
 
         assertThatIllegalArgumentException()
             .isThrownBy(() -> fileBasedComms.handleRequest(file.toPath(), inputLines -> List.of()));
+    }
+
+    @Test
+    public void shouldReadInputFile() throws IOException {
+        writeFile(inputFile.getPath(), """
+                1
+                2""");
+
+        fileBasedComms.handleRequest(
+            inputFile.toPath(),
+            inputLines -> {
+                assertThat(inputLines).hasSize(2);
+                assertThat(inputLines.get(0)).isEqualTo("1");
+                assertThat(inputLines.get(1)).isEqualTo("2");
+                return List.of();
+            }
+        );
+    }
+
+    private void writeFile(String path, String content) throws IOException {
+        FileWriter inputFileWriter = new FileWriter(path);
+        inputFileWriter.write(content);
+        inputFileWriter.flush();
+        inputFileWriter.close();
     }
 }
