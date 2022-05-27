@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import org.ignast.challenge.concordance.domain.Concordance;
+import org.ignast.challenge.concordance.domain.Concordances;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ public class ConcordanceController {
     private final LocalFileBasedCommunication localFileBasedCommunication;
 
     @Autowired
-    private final Concordance concordanceGenerator;
+    private final Concordances concordancesGenerator;
 
     @Autowired
     private final AlphabeticCounter counter;
@@ -29,7 +29,7 @@ public class ConcordanceController {
     public Path generateConcordance(final Path inputFilePath) {
         return localFileBasedCommunication.handleRequest(
             inputFilePath,
-            inputLines -> serialize(concordanceGenerator.generate(parseSentences(inputLines)))
+            inputLines -> serialize(concordancesGenerator.generate(parseSentences(inputLines)))
         );
     }
 
